@@ -64,6 +64,12 @@ body {
   width: 100%;
 }
 
+.clock {
+  margin: 5px;
+  border: none;
+  border-bottom: 1.5px solid black;
+}
+
 .task {
   background: #f4f4f4;
   margin: 5px;

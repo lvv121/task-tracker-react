@@ -3,7 +3,7 @@ import Header from './components/Header'
 import Footer from './components/Footer'
 import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
-import 'terminal.css'
+import { DateTime } from './components/DateTime'
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false)
@@ -17,6 +17,11 @@ const App = () => {
 
     getTasks()
   }, [])
+
+  //const sameDate = (first, second) =>
+  //first.getFullYear() <= second.getFullYear() &&
+  //first.getMonth() <= second.getMonth() &&
+  //first.getDate() <= second.getDate();
 
 const fetchTasks = async () => {
   const res = await fetch('http://localhost:5000/tasks')
@@ -47,7 +52,8 @@ const deleteTask = async (id) => {
   await fetch(`http://localhost:5000/tasks/${id}`, {
       method: 'DELETE',
     })
-  setTasks(tasks.filter((task) => task.id !== id))
+    setTasks(tasks.filter((task) => task.id !== id))
+  //setTasks(tasks.filter((task) => (sameDate(new Date(),task.day)) || (task.id !== id)))
 }
 
 const toggleReminder = async (id) => {
@@ -69,6 +75,7 @@ const toggleReminder = async (id) => {
 }
 
   return (
+    
     <div className='container'>
       <Header 
       onAdd={()=>setShowAddTask
@@ -78,6 +85,9 @@ const toggleReminder = async (id) => {
       {showAddTask && <AddTask onAdd={addTask} />}
       {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/> : 'no tasks for you'}
       <Footer />
+      <div className='clock'>
+        <DateTime />
+      </div>
     </div>
   )  
 }
