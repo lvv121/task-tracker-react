@@ -18,10 +18,7 @@ const App = () => {
     getTasks()
   }, [])
 
-  //const sameDate = (first, second) =>
-  //first.getFullYear() <= second.getFullYear() &&
-  //first.getMonth() <= second.getMonth() &&
-  //first.getDate() <= second.getDate();
+  
 
 const fetchTasks = async () => {
   const res = await fetch('http://localhost:5000/tasks')
@@ -86,7 +83,7 @@ const toggleReminder = async (id) => {
       {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/> : 'no tasks for you'}
       <Footer />
       <div className='clock'>
-        <DateTime />
+        <DateTime tasks={tasks}/>
       </div>
     </div>
   )  
