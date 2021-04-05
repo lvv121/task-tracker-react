@@ -4,10 +4,12 @@ import Footer from './components/Footer'
 import Tasks from './components/Tasks'
 import AddTask from './components/AddTask'
 import { DateTime } from './components/DateTime'
+import RefreshTasks from './components/RefreshTasks'
 
 const App = () => {
   const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
+  const [dateTime, ] = useState(new Date());
 
   useEffect(()=>{
     const getTasks = async () => {
@@ -18,7 +20,18 @@ const App = () => {
     getTasks()
   }, [])
 
-  
+ const timeComp = (first, second) =>
+  {
+      first=first.toLocaleTimeString();
+      var splitFirst=first.split(":");
+      var splitSecond=second.split(":");
+      if(splitFirst[0] > splitSecond[0])
+          return second;
+      else if(splitFirst[0] === splitSecond[0] && splitFirst[1] > splitSecond[1])
+          return second;
+      else
+          return first;
+  } 
 
 const fetchTasks = async () => {
   const res = await fetch('http://localhost:5000/tasks')
@@ -50,7 +63,6 @@ const deleteTask = async (id) => {
       method: 'DELETE',
     })
     setTasks(tasks.filter((task) => task.id !== id))
-  //setTasks(tasks.filter((task) => (sameDate(new Date(),task.day)) || (task.id !== id)))
 }
 
 const toggleReminder = async (id) => {
@@ -71,6 +83,13 @@ const toggleReminder = async (id) => {
     )
 }
 
+const deletePassedTasks = async (id) =>{
+    await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: 'DELETE',
+    })
+    setTasks(tasks.filter((task) => task.day !== timeComp(dateTime,task.day)))
+}
+
   return (
     
     <div className='container'>
@@ -79,6 +98,7 @@ const toggleReminder = async (id) => {
         (!showAddTask)}
       showAdd={showAddTask}
       />
+      <RefreshTasks task={tasks.filter((task) => task.id >= 1)} deletes={deletePassedTasks}/>
       {showAddTask && <AddTask onAdd={addTask} />}
       {tasks.length > 0 ? <Tasks tasks={tasks} onDelete={deleteTask} onToggle={toggleReminder}/> : 'no tasks for you'}
       <Footer />
